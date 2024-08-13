@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import env from "react-dotenv";
 
 function AccountList() {
-  const [accounts, setAccounts] = useState([
-    // Danh sách tài khoản mẫu
-    { id: 1, username: 'user1', email: 'user1@example.com' },
-    { id: 2, username: 'user2', email: 'user2@example.com' },
-  ]);
+  const [accounts, setAccounts] = useState([]);
 
   const handleDelete = (id) => {
-    setAccounts(accounts.filter((account) => account.id !== id));
+
+    setAccounts(accounts.filter((account) => account._id !== id));
+    // Delete
   };
+
+
+  useEffect(() => {
+    fetch(`http://${env.API_SERVER}:3000/users`)
+      .then((res) => res.json())
+      .then((data) => {
+        setAccounts(data.data);
+      }).catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   return (
     <div>
@@ -19,24 +29,24 @@ function AccountList() {
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Tên đăng nhập</th>
+            <th>Họ tên</th>
             <th>Email</th>
             <th>Hành động</th>
           </tr>
-        </thead>
-        <tbody>
-          {accounts.map((account) => (
-            <tr key={account.id}>
-              <td>{account.id}</td>
+          {accounts && accounts.map((account) => (
+            <tr key={account._id}>
               <td>{account.username}</td>
+              <td>{account.name}</td>
               <td>{account.email}</td>
               <td>
-                <Link to={`/quan-ly/sua/${account.id}`}>Sửa</Link> |{' '}
-                <button onClick={() => handleDelete(account.id)}>Xóa</button>
+                <Link to={`/quan-ly/sua/${account.username}`}>Sửa</Link> |{' '}
+                <button onClick={() => handleDelete(account._id)}>Xóa</button>
               </td>
             </tr>
           ))}
+        </thead>
+        <tbody>
         </tbody>
       </table>
     </div>

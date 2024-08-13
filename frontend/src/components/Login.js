@@ -6,9 +6,8 @@ function Login({ onLogin }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("okokok")
-    // Xử lý đăng nhập, ví dụ: kiểm tra username/password với database
-    // Nếu đăng nhập thành công, gọi hàm onLogin()
+    
+    
     if (password == "hieuvo") {
       onLogin();
     }

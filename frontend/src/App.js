@@ -4,11 +4,10 @@ import Login from './components/Login';
 import StickyNote from './components/StickyNote';
 import AccountList from './components/AccountList';
 import AccountForm from './components/AccountForm';
-
 import './App.css'
 
 function App() {
-
+  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogin = () => {

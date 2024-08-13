@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config()
+const { createHash } = require('crypto');
+var jwt = require('jsonwebtoken');
+
 
 const app = express();
 const mongoose = require('mongoose');
@@ -15,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to Mongodb
-mongoose.connect(`mongodb://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWD}@localhost:27017/K8s-demo`, {
+mongoose.connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWD}@cluster0.jfvnb.mongodb.net/K8s-demo?retryWrites=true&w=majority&appName=Cluster0`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -25,24 +28,108 @@ db.once('open', () => {
   console.log('Connected to MongoDB');
 });
 
+// DB schema
+const accountSchema = new mongoose.Schema({
+  username: String,
+  password: String,
+  email: String,
+  name: String,
+  role: String,
+});
+const Account = mongoose.model('users', accountSchema);
+
+//
+
+
 
 // APIS
+
+
 
 app.get('/hello', (req, res) => {
   res.send('CMC K8s demo!!! By HieuVo.');
 });
 
+app.post('/login', (req, res) => {
+  Account.findOne({ username: req.body.username, password: createHash('sha256').update(req.body.password).digest('hex')}).then(async (doc) => {
+    console.log(doc.role);
+    if (doc.length == 0) {
+      res.json({
+        status: 500,
+        msg: "Authen failed!"
+      });
+    } else {
+      res.json({
+        status: 200,
+        msg: "Done!",
+        jwt: jwt.sign({ role: doc.role , username: req.body.username, exp: Math.floor(Date.now() / 1000) + (60 * 60) }, `${process.env.JWT_SECRET}`),
+      });
+    }
+  }).catch(err => {
+    console.log(err);
+  })
+})
+
 app.post('/createUser', async (req, res) => {
-  const accountSchema = new mongoose.Schema({
-    username: String,
-    password: String,
-    email: String,
-    name: String,
+  if (req.body.role) {
+    res.json({
+      status: 500,
+      msg: "Not allowed!"
+    });
+    
+    return;
+  }
+  // Should use OTP, ... to prevent spamming.
+  if (req.body.username) {
+    Account.find({ username: req.body.username}).then(async (doc) => {
+      if (doc.length == 0) {
+        let acc = req.body;
+        acc.password = createHash('sha256').update(acc.password).digest('hex');
+        const newAccount = new Account(acc);
+        await newAccount.save();
+        res.json({
+          status: 200,
+          msg: "Done!"
+        });
+      } else {
+        res.json({
+          status: 500,
+          msg: "Account existed!"
+        })
+      }
+    }).catch(err => {
+      console.error(err)
+    });
+  }
+
+  
+})
+
+app.get('/users', async (req, res) => {
+  const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
+  jwt.verify(token, `${process.env.JWT_SECRET}`, function(err, decoded) {
+    console.log(decoded.role)
+    if (err || decoded.role != "admin") {
+      res.json({
+        status: 500,
+        x: token,
+        msg: "Authen failed!"
+      })
+    } else {
+      Account.find({}).then(async (doc) => {
+        res.json({
+          status: 200,
+          msg: "Done!",
+          data: doc
+        });
+      }).catch(err => {
+        console.error(err)
+      });
+    }
   });
-  const Account = mongoose.model('users', accountSchema);
-  const newAccount = new Account(req.body);
-  await newAccount.save();
-  res.json(newAccount);
+  
+  
+  
 })
 
 
