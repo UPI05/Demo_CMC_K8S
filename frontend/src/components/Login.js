@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import env from "react-dotenv";
 
 function Login({ onLogin }) {
   const [username, setUsername] = useState('');
@@ -7,10 +8,26 @@ function Login({ onLogin }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    fetch(`http://${env.API_SERVER}:3000/login`, {method: 'POST', headers: headers, body: JSON.stringify({
+      username: username,
+      password: password
+    })})
+      .then((data) => {return data.json()})
+      .then((data) => {
+        if (data.status == 200) {
+          alert("Login success!")
+          localStorage.setItem("token", data.jwt);
+          onLogin();
+        } else {
+          alert("Login fail!");
+        }
+      }).catch((err) => {
+        console.log(err);
+      });
     
-    if (password == "hieuvo") {
-      onLogin();
-    }
   };
 
   return (

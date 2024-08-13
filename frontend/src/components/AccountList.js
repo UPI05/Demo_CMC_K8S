@@ -2,25 +2,40 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import env from "react-dotenv";
 
-function AccountList() {
+function AccountList({ isLoggedIn }) {
   const [accounts, setAccounts] = useState([]);
 
-  const handleDelete = (id) => {
-
-    setAccounts(accounts.filter((account) => account._id !== id));
-    // Delete
+  const handleDelete = (username) => {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem("token")}`
+    };
+    fetch(`http://${env.API_SERVER}:3000/deleteUser`, {method: 'DELETE', headers: headers, body: JSON.stringify({ username: username })})
+      .then((res) => res.json())
+      .then((data) => {
+        alert("Delete account success!");
+      }).catch((err) => {
+        console.log(err);
+      });
+    setAccounts(accounts.filter((account) => account.username !== username));
+    
   };
 
+ 
 
   useEffect(() => {
-    fetch(`http://${env.API_SERVER}:3000/users`)
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem("token")}`
+    };
+    fetch(`http://${env.API_SERVER}:3000/getUsers`, {method: 'GET', headers: headers})
       .then((res) => res.json())
       .then((data) => {
         setAccounts(data.data);
       }).catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <div>
@@ -41,7 +56,7 @@ function AccountList() {
               <td>{account.email}</td>
               <td>
                 <Link to={`/quan-ly/sua/${account.username}`}>Sửa</Link> |{' '}
-                <button onClick={() => handleDelete(account._id)}>Xóa</button>
+                <button onClick={() => handleDelete(account.username)}>Xóa</button>
               </td>
             </tr>
           ))}

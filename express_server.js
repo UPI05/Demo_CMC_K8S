@@ -52,63 +52,78 @@ app.get('/hello', (req, res) => {
 
 app.post('/login', (req, res) => {
   Account.findOne({ username: req.body.username, password: createHash('sha256').update(req.body.password).digest('hex')}).then(async (doc) => {
-    console.log(doc.role);
-    if (doc.length == 0) {
+    if (!doc) {
       res.json({
         status: 500,
         msg: "Authen failed!"
       });
     } else {
+      var role = "user";
+      if (doc.role) {
+        role = doc.role;
+      }
       res.json({
         status: 200,
         msg: "Done!",
-        jwt: jwt.sign({ role: doc.role , username: req.body.username, exp: Math.floor(Date.now() / 1000) + (60 * 60) }, `${process.env.JWT_SECRET}`),
+        jwt: jwt.sign({ role: role , username: req.body.username, exp: Math.floor(Date.now() / 1000) + (60 * 60) }, `${process.env.JWT_SECRET}`),
       });
     }
   }).catch(err => {
     console.log(err);
-  })
-})
-
-app.post('/createUser', async (req, res) => {
-  if (req.body.role) {
     res.json({
       status: 500,
-      msg: "Not allowed!"
+      msg: "ERR!"
     });
-    
-    return;
-  }
-  // Should use OTP, ... to prevent spamming.
-  if (req.body.username) {
-    Account.find({ username: req.body.username}).then(async (doc) => {
-      if (doc.length == 0) {
+  })
+});
+
+app.post('/createUser', async (req, res) => {
+  const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
+  jwt.verify(token, `${process.env.JWT_SECRET}`, function(err, decoded) {
+    // I'm lazy so I don't check the token 's expiration
+    if (err || decoded.role != "admin" || req.body.role != 'user') {
+      res.json({
+        status: 500,
+        msg: "Not allowed or Authen failed!"
+      });
+      
+      return;
+    }
+    // Should use OTP, ... to prevent spamming.
+    if (req.body.username) {
+      Account.find({ username: req.body.username }).then(async (doc) => {
         let acc = req.body;
+        acc.role = "user";
         acc.password = createHash('sha256').update(acc.password).digest('hex');
-        const newAccount = new Account(acc);
-        await newAccount.save();
+        if (doc.length == 0) {
+          const newAccount = new Account(acc);
+          await newAccount.save();
+          
+        } else {
+          await Account.updateOne({ username: req.body.username }, acc);
+        }
         res.json({
           status: 200,
           msg: "Done!"
         });
-      } else {
+      }).catch(err => {
+        console.error(err);
         res.json({
           status: 500,
-          msg: "Account existed!"
-        })
-      }
-    }).catch(err => {
-      console.error(err)
-    });
-  }
+          msg: "ERR!"
+        });
+      });
+    }
+  });
+  
 
   
-})
+});
 
-app.get('/users', async (req, res) => {
+app.get('/getUsers', async (req, res) => {
   const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
   jwt.verify(token, `${process.env.JWT_SECRET}`, function(err, decoded) {
-    console.log(decoded.role)
+    // I'm lazy so I don't check the token 's expiration
     if (err || decoded.role != "admin") {
       res.json({
         status: 500,
@@ -123,7 +138,72 @@ app.get('/users', async (req, res) => {
           data: doc
         });
       }).catch(err => {
-        console.error(err)
+        console.error(err);
+        res.json({
+          status: 500,
+          msg: "ERR!"
+        });
+      });
+    }
+  });
+  
+  
+  
+});
+
+
+app.delete('/deleteUser', async (req, res) => {
+  const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
+  jwt.verify(token, `${process.env.JWT_SECRET}`, function(err, decoded) {
+    // I'm lazy so I don't check the token 's expiration
+    if (err || decoded.role != "admin") {
+      res.json({
+        status: 500,
+        x: token,
+        msg: "Authen failed!"
+      })
+    } else {
+      Account.deleteOne({ username: req.body.username }).then(async (doc) => {
+        res.json({
+          status: 200,
+          msg: "Done!",
+        });
+      }).catch(err => {
+        console.error(err);
+        res.json({
+          status: 500,
+          msg: "ERR!"
+        });
+      });
+    }
+  });
+  
+  
+  
+});
+
+app.post('/getUserByUsername', async (req, res) => {
+  const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
+  jwt.verify(token, `${process.env.JWT_SECRET}`, function(err, decoded) {
+    // // I'm lazy so I don't check the token 's expiration
+    if (err || decoded.role != "admin") {
+      res.json({
+        status: 500,
+        msg: "Authen failed!"
+      })
+    } else {
+      Account.findOne({ username: req.body.username }).then(async (doc) => {
+        res.json({
+          status: 200,
+          msg: "Done!",
+          data: doc
+        });
+      }).catch(err => {
+        console.error(err);
+        res.json({
+          status: 500,
+          msg: "ERR!"
+        });
       });
     }
   });
@@ -131,6 +211,8 @@ app.get('/users', async (req, res) => {
   
   
 })
+
+
 
 
 // Listen

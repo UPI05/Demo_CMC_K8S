@@ -1,41 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import env from "react-dotenv";
 
 function AccountForm() {
-  const { id } = useParams();
+  const { uname } = useParams();
   const navigate = useNavigate();
   const [account, setAccount] = useState({
     username: '',
     email: '',
+    name: '',
+    password: ''
   });
 
   useEffect(() => {
     // Nếu có id, fetch dữ liệu tài khoản từ database để hiển thị lên form
-    if (id) {
-      // fetch(`/api/accounts/${id}`)
-      //   .then((res) => res.json())
-      //   .then((data) => setAccount(data));
-      // Ví dụ:
-      const account = { id: 1, username: 'user1', email: 'user1@example.com' };
-      setAccount(account);
-    }
-  }, [id]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Xử lý thêm/sửa tài khoản, ví dụ: gửi dữ liệu lên API
-    if (id) {
-      // PUT /api/accounts/:id
-    } else {
+    if (uname) {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem("token")}`
+      };
+      fetch(`http://${env.API_SERVER}:3000/getUserByUsername`, {method: 'POST', headers: headers, body: JSON.stringify({ username: uname })})
+        .then((res) => {return res.json()})
+        .then((data) => {
+          setAccount(data.data);
+        }).catch((err) => {
+          console.log(err);
+        });
       
-        
     }
+  }, [uname]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // if (uname) {}
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem("token")}`
+    };
+    await fetch(`http://${env.API_SERVER}:3000/createUser`, {method: 'POST', headers: headers, body: JSON.stringify({ username: account.username, password: account.password, email: account.email, name: account.name, role: "user" })})
+      .then((res) => {return res.json()})
+      .then((res) => {
+        alert("Register/update success!");
+      }).catch((err) => {
+        console.log(err);
+      });
     navigate('/quan-ly');
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <h1>{id ? 'Sửa tài khoản' : 'Thêm tài khoản'}</h1>
+      <h1>{uname ? 'Sửa tài khoản' : 'Thêm tài khoản'}</h1>
       <div>
         <label htmlFor="name">Họ & Tên:</label>
         <input
@@ -51,6 +65,7 @@ function AccountForm() {
           type="text"
           id="username"
           value={account.username}
+          disabled={uname ? true : false}
           onChange={(e) => setAccount({ ...account, username: e.target.value })}
         />
       </div>
