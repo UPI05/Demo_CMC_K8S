@@ -12,5 +12,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile_frontend --tag apiserver:$(date +%s)
+    - name: Build the apiserver image
+      run: docker build . -f Dockerfile_apiserver -t apiserver:$(date +%s)
+    - name: Build the frontend image
+      run: docker build . -f Dockerfile_frontend -t frontend:$(date +%s)

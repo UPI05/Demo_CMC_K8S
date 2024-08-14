@@ -1,19 +1,8 @@
 # API server
-FROM node:latest
+FROM nginx:latest
 
-RUN mkdir -p /home/test
+COPY frontend/build/* /usr/share/nginx/html/
 
-WORKDIR /home/test
+ENV PORT 80
 
-COPY package.json .
-COPY package-lock.json .
-COPY express_server.js .
-
-RUN npm install
-
-ENV PORT 3000
-
-EXPOSE 3000
-
-CMD ["node", "express_server.js"]
-
+EXPOSE 80
