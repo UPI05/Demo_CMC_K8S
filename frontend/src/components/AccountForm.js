@@ -19,7 +19,7 @@ function AccountForm() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem("token")}`
       };
-      fetch(`http://${env.API_SERVER}/getUserByUsername`, {method: 'POST', headers: headers, body: JSON.stringify({ username: uname })})
+      fetch(`https://${env.API_SERVER}/getUserByUsername`, {method: 'POST', headers: headers, body: JSON.stringify({ username: uname })})
         .then((res) => {return res.json()})
         .then((data) => {
           setAccount(data.data);
@@ -37,7 +37,7 @@ function AccountForm() {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem("token")}`
     };
-    await fetch(`http://${env.API_SERVER}/createUser`, {method: 'POST', headers: headers, body: JSON.stringify({ username: account.username, password: account.password, email: account.email, name: account.name, role: "user" })})
+    await fetch(`https://${env.API_SERVER}/createUser`, {method: 'POST', headers: headers, body: JSON.stringify({ username: account.username, password: account.password, email: account.email, name: account.name, role: "user" })})
       .then((res) => {return res.json()})
       .then((res) => {
         alert("Register/update success!");

@@ -10,7 +10,7 @@ function AccountList({ isLoggedIn }) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem("token")}`
     };
-    fetch(`http://${env.API_SERVER}/deleteUser`, {method: 'DELETE', headers: headers, body: JSON.stringify({ username: username })})
+    fetch(`https://${env.API_SERVER}/deleteUser`, {method: 'DELETE', headers: headers, body: JSON.stringify({ username: username })})
       .then((res) => res.json())
       .then((data) => {
         alert("Delete account success!");
@@ -28,7 +28,7 @@ function AccountList({ isLoggedIn }) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem("token")}`
     };
-    fetch(`http://${env.API_SERVER}/getUsers`, {method: 'GET', headers: headers})
+    fetch(`https://${env.API_SERVER}/getUsers`, {method: 'GET', headers: headers})
       .then((res) => res.json())
       .then((data) => {
         setAccounts(data.data);

@@ -7,6 +7,13 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - "d1l1th1um.click"
+    secretName: d1l1th1um-cert
+  - hosts:
+    - "api.d1l1th1um.click"
+    secretName: d1l1th1um-api-cert
   rules:
   - host: "d1l1th1um.click"
     http:

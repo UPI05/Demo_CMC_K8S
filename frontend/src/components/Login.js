@@ -11,7 +11,7 @@ function Login({ onLogin }) {
     const headers = {
       'Content-Type': 'application/json'
     };
-    fetch(`http://${env.API_SERVER}/login`, {method: 'POST', headers: headers, body: JSON.stringify({
+    fetch(`https://${env.API_SERVER}/login`, {method: 'POST', headers: headers, body: JSON.stringify({
       username: username,
       password: password
     })})
