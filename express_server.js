@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config()
 const { createHash } = require('crypto');
 var jwt = require('jsonwebtoken');
 
@@ -18,7 +17,7 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to Mongodb
-mongoose.connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWD}@cluster0.jfvnb.mongodb.net/K8s-demo?retryWrites=true&w=majority&appName=Cluster0`, {
+mongoose.connect(`mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWD}@cluster0.jfvnb.mongodb.net/K8s-demo?retryWrites=true&w=majority&appName=Cluster0`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -65,7 +64,7 @@ app.post('/login', (req, res) => {
       res.json({
         status: 200,
         msg: "Done!",
-        jwt: jwt.sign({ role: role , username: req.body.username, exp: Math.floor(Date.now() / 1000) + (60 * 60) }, `${process.env.JWT_SECRET}`),
+        jwt: jwt.sign({ role: role , username: req.body.username, exp: Math.floor(Date.now() / 1000) + (60 * 60) }, `${JWT_SECRET}`),
       });
     }
   }).catch(err => {
@@ -79,7 +78,7 @@ app.post('/login', (req, res) => {
 
 app.post('/createUser', async (req, res) => {
   const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
-  jwt.verify(token, `${process.env.JWT_SECRET}`, function(err, decoded) {
+  jwt.verify(token, `${JWT_SECRET}`, function(err, decoded) {
     // I'm lazy so I don't check the token 's expiration
     if (err || decoded.role != "admin" || req.body.role != 'user') {
       res.json({
@@ -122,7 +121,7 @@ app.post('/createUser', async (req, res) => {
 
 app.get('/getUsers', async (req, res) => {
   const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
-  jwt.verify(token, `${process.env.JWT_SECRET}`, function(err, decoded) {
+  jwt.verify(token, `${JWT_SECRET}`, function(err, decoded) {
     // I'm lazy so I don't check the token 's expiration
     if (err || decoded.role != "admin") {
       res.json({
@@ -154,7 +153,7 @@ app.get('/getUsers', async (req, res) => {
 
 app.delete('/deleteUser', async (req, res) => {
   const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
-  jwt.verify(token, `${process.env.JWT_SECRET}`, function(err, decoded) {
+  jwt.verify(token, `${JWT_SECRET}`, function(err, decoded) {
     // I'm lazy so I don't check the token 's expiration
     if (err || decoded.role != "admin") {
       res.json({
@@ -184,7 +183,7 @@ app.delete('/deleteUser', async (req, res) => {
 
 app.post('/getUserByUsername', async (req, res) => {
   const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
-  jwt.verify(token, `${process.env.JWT_SECRET}`, function(err, decoded) {
+  jwt.verify(token, `${JWT_SECRET}`, function(err, decoded) {
     // // I'm lazy so I don't check the token 's expiration
     if (err || decoded.role != "admin") {
       res.json({
