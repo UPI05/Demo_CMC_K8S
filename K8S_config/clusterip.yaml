@@ -8,9 +8,11 @@ spec:
                 app: d1l1th1um
         ports:
                 - protocol: TCP
+                  name: apiserver
                   port: 3000
                   targetPort: 3000
                 - protocol: TCP
+                  name: frontend
                   port: 80
                   targetPort: 80
         type: ClusterIP
