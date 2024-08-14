@@ -17,7 +17,7 @@ function Login({ onLogin }) {
     })})
       .then((data) => {return data.json()})
       .then((data) => {
-        if (data.status == 200) {
+        if (data.status === 200) {
           alert("Login success!")
           localStorage.setItem("token", data.jwt);
           onLogin();
