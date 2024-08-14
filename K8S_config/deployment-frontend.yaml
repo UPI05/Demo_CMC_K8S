@@ -15,6 +15,7 @@ spec:
                 spec:
                         containers:
                         - name: frontend
+                          imagePullPolicy: Always
                           image: upi05/frontend
                           ports:
                           - containerPort: 80

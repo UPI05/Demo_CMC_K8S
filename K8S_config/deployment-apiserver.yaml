@@ -16,6 +16,7 @@ spec:
                         containers:
                         - name: apiserver
                           image: upi05/apiserver
+                          imagePullPolicy: Always
                           envFrom:
                           - secretRef:
                                 name: d1l1th1um-apiserver-env-secret
