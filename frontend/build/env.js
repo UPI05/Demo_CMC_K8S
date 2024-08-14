@@ -1,6 +1,6 @@
 window.env = {
   "ALLUSERSPROFILE": "C:\\ProgramData",
-  "API_SERVER": "d1l1th1um-clusterip",
+  "API_SERVER": "api.d1l1th1um.click",
   "APPDATA": "C:\\Users\\votru\\AppData\\Roaming",
   "ChocolateyInstall": "C:\\ProgramData\\chocolatey",
   "ChocolateyLastPathUpdate": "133679091809243261",
