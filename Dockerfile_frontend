@@ -1,7 +1,7 @@
 # API server
 FROM nginx:latest
 
-COPY frontend/build/ /usr/share/nginx/html/
+COPY -r frontend/build/ /usr/share/nginx/html/
 
 ENV PORT 80
 
