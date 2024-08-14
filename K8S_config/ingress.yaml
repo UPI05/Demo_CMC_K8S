@@ -18,3 +18,13 @@ spec:
             name: d1l1th1um-clusterip 
             port:
               number: 80
+  - host: "api.d1l1th1um.click"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: d1l1th1um-clusterip 
+            port:
+              number: 3000
