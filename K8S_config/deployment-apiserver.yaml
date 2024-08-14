@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+        name: d1l1th1um-deployment-apiserver
+        namespace: d1l1th1um
+spec:
+        replicas: 2
+        selector:
+                matchLabels:
+                        app: d1l1th1um
+        template:
+                metadata:
+                        labels:
+                                app: d1l1th1um
+                spec:
+                        containers:
+                        - name: apiserver
+                          image: upi05/apiserver
+                          ports:
+                          - containerPort: 3000
