@@ -12,9 +12,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build frontend
-      run: cd frontend && npm run build
+
+    - name: Build frontend code
+      run: cd frontend && npm install && npm run build
+
     - name: Build the frontend image
       run: docker build . -f Dockerfile_frontend -t frontend:$(date +%s)
+
     - name: Build the apiserver image
       run: docker build . -f Dockerfile_apiserver -t apiserver:$(date +%s)
