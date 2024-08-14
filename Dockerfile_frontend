@@ -3,7 +3,7 @@ FROM nginx:latest
 
 RUN rm -rf /usr/share/nginx/html/
 
-RUN mkdir -f /usr/share/nginx/html/
+RUN mkdir -p /usr/share/nginx/html/
 
 COPY frontend/build/ /usr/share/nginx/html/
 
