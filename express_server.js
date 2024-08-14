@@ -18,9 +18,6 @@ app.use(logger);
 app.use(cors());
 app.use(express.json());
 
-console.log(`${process.env.MONGODB_USER}`);
-exit(0);
-
 // Connect to Mongodb
 mongoose.connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWD}@cluster0.jfvnb.mongodb.net/K8s-demo?retryWrites=true&w=majority&appName=Cluster0`, {
   useNewUrlParser: true,
