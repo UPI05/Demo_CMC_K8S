@@ -157,7 +157,6 @@ app.delete('/deleteUser', async (req, res) => {
     if (err || decoded.role != "admin") {
       res.json({
         status: 500,
-        x: token,
         msg: "Authen failed!"
       })
     } else {
