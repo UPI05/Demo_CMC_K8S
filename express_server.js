@@ -66,7 +66,7 @@ app.post('/login', (req, res) => {
       res.json({
         status: 200,
         msg: "Done!",
-        jwt: jwt.sign({ role: role , username: req.body.username, exp: Math.floor(Date.now() / 1000) + (60 * 60) }, `${process.env.JWT_SECRET}`),
+        jwt: jwt.sign({ role: role , username: req.body.username }, `${process.env.JWT_SECRET}`, { expiresIn: '1h' }),
       });
     }
   }).catch(err => {
@@ -81,7 +81,6 @@ app.post('/login', (req, res) => {
 app.post('/createUser', async (req, res) => {
   const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
   jwt.verify(token, `${process.env.JWT_SECRET}`, function(err, decoded) {
-    // I'm lazy so I don't check the token 's expiration
     if (err || decoded.role != "admin" || req.body.role != 'user') {
       res.json({
         status: 500,
@@ -124,7 +123,6 @@ app.post('/createUser', async (req, res) => {
 app.get('/getUsers', async (req, res) => {
   const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
   jwt.verify(token, `${process.env.JWT_SECRET}`, function(err, decoded) {
-    // I'm lazy so I don't check the token 's expiration
     if (err || decoded.role != "admin") {
       res.json({
         status: 500,
@@ -156,7 +154,6 @@ app.get('/getUsers', async (req, res) => {
 app.delete('/deleteUser', async (req, res) => {
   const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
   jwt.verify(token, `${process.env.JWT_SECRET}`, function(err, decoded) {
-    // I'm lazy so I don't check the token 's expiration
     if (err || decoded.role != "admin") {
       res.json({
         status: 500,
@@ -186,7 +183,6 @@ app.delete('/deleteUser', async (req, res) => {
 app.post('/getUserByUsername', async (req, res) => {
   const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
   jwt.verify(token, `${process.env.JWT_SECRET}`, function(err, decoded) {
-    // // I'm lazy so I don't check the token 's expiration
     if (err || decoded.role != "admin") {
       res.json({
         status: 500,
