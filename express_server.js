@@ -128,7 +128,7 @@ app.get('/getUsers', async (req, res) => {
     if (err || decoded.role != "admin") {
       res.json({
         status: 500,
-        x: token,
+        err: JSON.stringify(err),
         msg: "Authen failed!"
       })
     } else {
