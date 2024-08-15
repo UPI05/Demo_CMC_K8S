@@ -31,7 +31,11 @@ function AccountList({ isLoggedIn }) {
     fetch(`https://${env.API_SERVER}/getUsers`, {method: 'GET', headers: headers})
       .then((res) => res.json())
       .then((data) => {
-        setAccounts(data.data);
+        if (data.status === 200) {
+          setAccounts(data.data);
+        } else {
+          alert("Token expired!!!");
+        }
       }).catch((err) => {
         console.log(err);
       });
