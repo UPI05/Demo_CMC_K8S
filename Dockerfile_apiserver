@@ -1,7 +1,7 @@
 # API server
 FROM node:latest
 
-RUN mkdir -p /home/test
+#RUN mkdir -p /home/test
 
 WORKDIR /home/test
 
