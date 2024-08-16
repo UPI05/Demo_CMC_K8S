@@ -1,8 +1,6 @@
 # API server
 FROM node:latest
 
-#RUN mkdir -p /home/test
-
 WORKDIR /home/test
 
 COPY package.json .

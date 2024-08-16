@@ -1,0 +1,11 @@
+project: default
+source:
+  repoURL: https://github.com/UPI05/Demo_CMC_K8S.git
+  path: argocd_k8S_config
+  targetRevision: master
+destination:
+  server: https://kubernetes.default.svc
+  namespace: d1l1th1um
+syncPolicy:
+  syncOptions:
+    - Replace=true
