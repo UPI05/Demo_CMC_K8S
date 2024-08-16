@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: CICD Pipeline
 
 on:
   push:
@@ -28,11 +28,11 @@ jobs:
     - name: Push images
       run: docker push upi05/frontend && docker push upi05/apiserver
 
-    - name: CI Badges
-      uses: gaelgirodon/ci-badges-action@v1
-      with:
-        gist-id: 83254e655024c7a59867a51efdff2525
-        token: ${{ secrets.GIST_TOKEN }}
+    #- name: CI Badges in case testing
+    #  uses: gaelgirodon/ci-badges-action@v1
+    #  with:
+    #    gist-id: 83254e655024c7a59867a51efdff2525
+    #    token: ${{ secrets.GIST_TOKEN }}
 
     - name: Argocd
       uses: imajeetyadav/argocd-cli@v1
