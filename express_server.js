@@ -48,7 +48,7 @@ const Account = mongoose.model('users', accountSchema);
 
 
 app.get('/hello', (req, res) => {
-  res.send('CMC K8s demo!!! By HieuVo. Test CICD.');
+  res.send('CMC K8s demo!!! By HieuVo. Test CICD 1.');
 });
 
 app.post('/login', (req, res) => {
