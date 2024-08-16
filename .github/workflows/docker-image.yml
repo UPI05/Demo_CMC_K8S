@@ -27,3 +27,12 @@ jobs:
 
     - name: Push images
       run: docker push upi05/frontend && docker push upi05/apiserver
+
+    - name: Trigger CD with ArgoCD
+      uses: imajeetyadav/argocd-cli@v1
+      with:
+        version: v2.5.7
+      run: |
+        argocd login ${{ ARGOCD_SERVER }} \
+          --username ${{ ARGOCD_USERNAME }} \
+          --password ${{ ARGOCD_PASSWD }} \
