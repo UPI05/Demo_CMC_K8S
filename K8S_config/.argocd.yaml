@@ -1,0 +1,8 @@
+piVersion: argoproj.io/v1alpha1
+kind: Application
+spec:
+  source:
+    path: .
+    ignore:
+      - redis-deployment.yaml
+      - secrets.yaml
