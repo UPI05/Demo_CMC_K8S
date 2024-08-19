@@ -3,7 +3,7 @@
 CMC Kubernetes Demo
 
 - CI Pipeline: Github Actions
-- CD: ArgonCD
+- CD: ArgoCD
 - Image Registry: Docker Hub
 - Logs: Fluent Bit - Elastic Search - Kibana
 - API server: ExpressJS
