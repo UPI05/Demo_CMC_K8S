@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build the frontend image
+    - name: Build the frontend image .
       run: cd frontend &&  npm install && rm -rf build && ls  && npm run build && ls && cd .. && docker build . -f ./Dockerfile_frontend -t upi05/frontend
 
     - name: Build the apiserver image
