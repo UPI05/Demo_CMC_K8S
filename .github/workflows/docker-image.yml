@@ -17,7 +17,7 @@ jobs:
       run: pwd
 
     - name: Build the frontend image
-      run: cd frontend && npm install && npm run build && cd .. && docker build . -f ./Dockerfile_frontend -t upi05/frontend
+      run: cd frontend && npm install && rm -rf build && npm run build && cd .. && docker build . -f ./Dockerfile_frontend -t upi05/frontend
 
     - name: Build the apiserver image
       run: docker build . -f Dockerfile_apiserver -t upi05/apiserver
