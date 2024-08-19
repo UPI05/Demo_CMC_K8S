@@ -5,3 +5,4 @@ frontend/node_modules
 ssl
 ssl_apiserver
 tmp
+frontend/build
